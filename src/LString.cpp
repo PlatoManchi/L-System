@@ -82,8 +82,34 @@ string LString::replace(string pSource, string pDelimiter, string pReplaceString
 // rules 
 // F : move forward and draw line forward
 // f : move forward without drawing line forward
-// + : rotate counter clock wise (add angle)
-// - : rotate clock wise (substract angle)
+// + : turn left by angle, using rotation matrix Ru(-angle)
+// - : turn right by angle, using rotation matrix Ru(angle)
+// & : pitch down by angle, using rotation matrix Rl(-angle)
+// ^ : pitch up by angle, using rotation matrix Rl(angle)
+// \ : roll left by angle, using rotation matrix Rh(-angle)
+// / : roll right by angle, using rotation matrx rh(angle)
+// | : turn around using rotation matrix Ru(-180)
+// [ : Push the current state of the turtle onto a pushdown
+//     operations stack.The information saved on the stack contains the
+//     turtle's position and orientation, and possibly other attributes
+//     such as the color and width of lines being drawn.
+// ] : Pop a state from the stack and make it the current state
+//     of the turtle.No line is drawn, although in general the
+//     position of the turtle changes.
+// Ru(angle) : 
+//             cos(angle)  sin(angle)      0
+//            -sin(angle)  cos(angle)      0
+//                0            0           1
+// Rl(angle):
+//            cos(angle)      0      -sin(angle)
+//                0           1           0
+//            sin(angle)      0      cos(angle)
+//Rh(angle)
+//                1           0           0
+//                0      cos(angle)   -sin(angle)
+//                0      sin(angle)    cos(angle)
+
+
 Quad LString::GenerateQuad(string pLString, float pAngle){
 
 	Quad quad;
@@ -132,20 +158,12 @@ Quad LString::GenerateQuad(string pLString, float pAngle){
 			// -sin(angle)  cos(angle)      0
 			//     0            0           1
 			ofMatrix3x3 rotationMatrix;
-			rotationMatrix.a = cosf( -rotationAngle );
-			rotationMatrix.b = sinf( -rotationAngle );
-			rotationMatrix.c = 0;
+			rotationMatrix.a = cosf( -rotationAngle );			rotationMatrix.b = sinf( -rotationAngle );			rotationMatrix.c = 0;
+			rotationMatrix.d = -sinf( -rotationAngle );			rotationMatrix.e = cosf( -rotationAngle );			rotationMatrix.f = 0;
+			rotationMatrix.g = 0;								rotationMatrix.h = 0;								rotationMatrix.i = 1;
 
-			rotationMatrix.d = -sinf( -rotationAngle );
-			rotationMatrix.e = cosf( -rotationAngle );
-			rotationMatrix.f = 0;
-
-			rotationMatrix.g = 0;
-			rotationMatrix.h = 0;
-			rotationMatrix.i = 1;
-
-			unitDirectionVector = unitDirectionVector.rotateRad(-rotationAngle, ofVec3f(0.0f, 0.0f, 1.0f));
-			//unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
+			//unitDirectionVector = unitDirectionVector.rotateRad(-rotationAngle, ofVec3f(0.0f, 0.0f, 1.0f));
+			unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
 			//ofLog() << unitDirectionVector.x << ", " << unitDirectionVector.y << ", " << unitDirectionVector.z;
 		}
 		else if (operation == '-'){
@@ -153,59 +171,35 @@ Quad LString::GenerateQuad(string pLString, float pAngle){
 			// -sin(angle)  cos(angle)      0
 			//     0            0           1
 			ofMatrix3x3 rotationMatrix;
-			rotationMatrix.a = cosf(rotationAngle);
-			rotationMatrix.b = sinf(rotationAngle);
-			rotationMatrix.c = 0;
+			rotationMatrix.a = cosf(rotationAngle);			rotationMatrix.b = sinf(rotationAngle);			rotationMatrix.c = 0;
+			rotationMatrix.d = -sinf(rotationAngle);		rotationMatrix.e = cosf(rotationAngle);			rotationMatrix.f = 0;
+			rotationMatrix.g = 0;							rotationMatrix.h = 0;							rotationMatrix.i = 1;
 
-			rotationMatrix.d = -sinf(rotationAngle);
-			rotationMatrix.e = cosf(rotationAngle);
-			rotationMatrix.f = 0;
-
-			rotationMatrix.g = 0;
-			rotationMatrix.h = 0;
-			rotationMatrix.i = 1;
-
-			//unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
-			unitDirectionVector = unitDirectionVector.rotateRad(rotationAngle, ofVec3f(0.0f, 0.0f, 1.0f));
+			unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
+			//unitDirectionVector = unitDirectionVector.rotateRad(rotationAngle, ofVec3f(0.0f, 0.0f, 1.0f));
 			//ofLog() << unitDirectionVector.x << ", " << unitDirectionVector.y << ", " << unitDirectionVector.z;
 		}
 		else if (operation == '&'){
-			//  cos(angle)      0      sin(angle)
+			//  cos(angle)      0      -sin(angle)
 			//      0           1           0
 			//  sin(angle)      0      cos(angle)
 			ofMatrix3x3 rotationMatrix;
-			rotationMatrix.a = cosf(rotationAngle);
-			rotationMatrix.b = 0;
-			rotationMatrix.c = sinf(rotationAngle);
-
-			rotationMatrix.d = 0;
-			rotationMatrix.e = 1;
-			rotationMatrix.f = 0;
-
-			rotationMatrix.g = sinf(rotationAngle);
-			rotationMatrix.h = 0;
-			rotationMatrix.i = cosf(rotationAngle);
+			rotationMatrix.a = cosf(-rotationAngle);			rotationMatrix.b = 0;			rotationMatrix.c = -sinf(-rotationAngle);
+			rotationMatrix.d = 0;								rotationMatrix.e = 1;			rotationMatrix.f = 0;
+			rotationMatrix.g = sinf(-rotationAngle);			rotationMatrix.h = 0;			rotationMatrix.i = cosf(-rotationAngle);
 
 			unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
 			//unitDirectionVector = unitDirectionVector.rotateRad(PI-rotationAngle, ofVec3f(0.0f, 1.0f, 0.0f));
 			//ofLog() << unitDirectionVector.x << ", " << unitDirectionVector.y << ", " << unitDirectionVector.z;
 		}
 		else if (operation == '^'){
-			//  cos(angle)      0      sin(angle)
+			//  cos(angle)      0      -sin(angle)
 			//      0           1           0
 			//  sin(angle)      0      cos(angle)
 			ofMatrix3x3 rotationMatrix;
-			rotationMatrix.a = cosf(-rotationAngle);
-			rotationMatrix.b = 0;
-			rotationMatrix.c = sinf(-rotationAngle);
-
-			rotationMatrix.d = 0;
-			rotationMatrix.e = 1;
-			rotationMatrix.f = 0;
-
-			rotationMatrix.g = sinf(-rotationAngle);
-			rotationMatrix.h = 0;
-			rotationMatrix.i = cosf(-rotationAngle);
+			rotationMatrix.a = cosf(rotationAngle);			rotationMatrix.b = 0;			rotationMatrix.c = -sinf(rotationAngle);
+			rotationMatrix.d = 0;							rotationMatrix.e = 1;			rotationMatrix.f = 0;
+			rotationMatrix.g = sinf(rotationAngle);			rotationMatrix.h = 0;			rotationMatrix.i = cosf(rotationAngle);
 
 			unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
 			//unitDirectionVector = unitDirectionVector.rotateRad(rotationAngle, ofVec3f(0.0f, 1.0f, 0.0f));
@@ -216,17 +210,9 @@ Quad LString::GenerateQuad(string pLString, float pAngle){
 			//      0      cos(angle)   -sin(angle)
 			//      0      sin(angle)    cos(angle)
 			ofMatrix3x3 rotationMatrix;
-			rotationMatrix.a = 1;
-			rotationMatrix.b = 0;
-			rotationMatrix.c = 0;
-
-			rotationMatrix.d = 0;
-			rotationMatrix.e = cosf(rotationAngle);
-			rotationMatrix.f = -sinf(rotationAngle);
-
-			rotationMatrix.g = 0;
-			rotationMatrix.h = sinf(rotationAngle);
-			rotationMatrix.i = cosf(rotationAngle);
+			rotationMatrix.a = 1;			rotationMatrix.b = 0;							rotationMatrix.c = 0;
+			rotationMatrix.d = 0;			rotationMatrix.e = cosf(-rotationAngle);		rotationMatrix.f = -sinf(-rotationAngle);
+			rotationMatrix.g = 0;			rotationMatrix.h = sinf(-rotationAngle);		rotationMatrix.i = cosf(-rotationAngle);
 
 			unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
 			//ofLog() << unitDirectionVector.x << ", " << unitDirectionVector.y << ", " << unitDirectionVector.z;
@@ -236,17 +222,9 @@ Quad LString::GenerateQuad(string pLString, float pAngle){
 			//      0      cos(angle)   -sin(angle)
 			//      0      sin(angle)    cos(angle)
 			ofMatrix3x3 rotationMatrix;
-			rotationMatrix.a = 1;
-			rotationMatrix.b = 0;
-			rotationMatrix.c = 0;
-
-			rotationMatrix.d = 0;
-			rotationMatrix.e = cosf(-rotationAngle);
-			rotationMatrix.f = -sinf(-rotationAngle);
-
-			rotationMatrix.g = 0;
-			rotationMatrix.h = sinf(-rotationAngle);
-			rotationMatrix.i = cosf(-rotationAngle);
+			rotationMatrix.a = 1;			rotationMatrix.b = 0;							rotationMatrix.c = 0;
+			rotationMatrix.d = 0;			rotationMatrix.e = cosf(rotationAngle);			rotationMatrix.f = -sinf(rotationAngle);
+			rotationMatrix.g = 0;			rotationMatrix.h = sinf(rotationAngle);			rotationMatrix.i = cosf(rotationAngle);
 
 			unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
 			//ofLog() << unitDirectionVector.x << ", " << unitDirectionVector.y << ", " << unitDirectionVector.z;
@@ -256,17 +234,9 @@ Quad LString::GenerateQuad(string pLString, float pAngle){
 			// -sin(angle)  cos(angle)      0
 			//     0            0           1
 			ofMatrix3x3 rotationMatrix;
-			rotationMatrix.a = cosf(-PI);
-			rotationMatrix.b = sinf(-PI);
-			rotationMatrix.c = 0;
-
-			rotationMatrix.d = -sinf(-PI);
-			rotationMatrix.e = cosf(-PI);
-			rotationMatrix.f = 0;
-
-			rotationMatrix.g = 0;
-			rotationMatrix.h = 0;
-			rotationMatrix.i = 1;
+			rotationMatrix.a = cosf(-PI);			rotationMatrix.b = sinf(-PI);			rotationMatrix.c = 0;
+			rotationMatrix.d = -sinf(-PI);			rotationMatrix.e = cosf(-PI);			rotationMatrix.f = 0;
+			rotationMatrix.g = 0;					rotationMatrix.h = 0;					rotationMatrix.i = 1;
 
 			unitDirectionVector = RotateVector(rotationMatrix, unitDirectionVector);
 

@@ -5,12 +5,12 @@ void ofApp::setup(){
 	LString lString;
 	
 	// new method
-	string str = lString.GetLString(2, 3, string("F+F+F+F"), string("F=F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF"), string("f=ffffff"));
+	//string str = lString.GetLString(2, 3, string("F+F+F+F"), string("F=F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF"), string("f=ffffff"));
 	//string str = lString.GetLString(3, 2, string("F-F-F-F"), string("F=FF-F+F-F-FF"));
 	//string str = lString.GetLString(7, 3, string("X"), string("X=F[+X][-X]FX"), string("F=FF"));
 	//string str = lString.GetLString(1, 5, string("A"), string("A=B-F+CFC+F-D&F^D-F+&&CFC+F+B//"), string("B=A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//"), string("C=|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//"), string("D=|CFB-F+B|FA&F^A&&FB-F+B|FC//"));
 	//string str = lString.GetLString(7, 5, string("A"), string("A=[&FL!A]/////'[&FL!A]///////'[&FL!A]"), string("F=S/////F"), string("S=FL"), string("D=L=['''^^{-f+f+f-|-f+f+f}]"));
-	/*string str = lString.GetLString(5, 8, 
+	string str = lString.GetLString(5, 8, 
 		string("plant "), 
 		string("plant = internode + [ plant + fower ]--//[--leaf ] internode [++ leaf ]-[ plant flower ]++ plant flower "), 
 		string("internode = F seg [//&& leaf ][//^^ leaf ]F seg "), 
@@ -18,12 +18,12 @@ void ofApp::setup(){
 		string("leaf = ['{+f-ff-f+|+f-ff-f}]"),
 		string("flower = [&&& pedicel '/ wedge //// wedge //// wedge //// wedge //// wedge ]"),
 		string("pedicel = FF"),
-		string("wedge = [^F][{&&&&-f+f|-f+f}]"));*/
+		string("wedge = [^F][{&&&&-f+f|-f+f}]"));
 	//string str = lString.GetLString(1, 2, string("A"), string("A=f[+F][-F][&F][^F][\\F][/F]"));
 	//string str = lString.GetLString(1, 1, string("+F&F-F\\F^F/F"));
 
 	//ofLog() << str;
-	n1 = lString.GenerateQuad( str, 90.0f );
+	n1 = lString.GenerateQuad( str, 18.0f );
 }
 
 //--------------------------------------------------------------
@@ -42,8 +42,9 @@ void ofApp::draw(){
 	//point.y = ofGetScreenHeight() / 2.0f;
 	point.x = 500.0f;
 	point.y = 700.0f;
-	
-	//ofTranslate(point);     // move the coordinate system to position of point and make that zero.
+	point.z = -2500.0f;
+
+	ofTranslate(point);     // move the coordinate system to position of point and make that zero.
 
 
 	/*ofColor green(0, 255, 0);
