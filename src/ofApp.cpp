@@ -1,4 +1,4 @@
-#include "ofApp.h"
+﻿#include "ofApp.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -6,19 +6,19 @@ void ofApp::setup(){
 	
 	// new method
 	//string str = lString.GetLString(2, 3, string("F+F+F+F"), string("F=F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF"), string("f=ffffff"));
-	//string str = lString.GetLString(3, 2, string("F-F-F-F"), string("F=FF-F+F-F-FF"));
+	//string str = lString.GetLString(1, 2, string("F-F-F-F"), string("F=F-F+F+FF-F-F+F"));
 	//string str = lString.GetLString(7, 3, string("X"), string("X=F[+X][-X]FX"), string("F=FF"));
 	//string str = lString.GetLString(1, 5, string("A"), string("A=B-F+CFC+F-D&F^D-F+&&CFC+F+B//"), string("B=A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//"), string("C=|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//"), string("D=|CFB-F+B|FA&F^A&&FB-F+B|FC//"));
 	//string str = lString.GetLString(7, 5, string("A"), string("A=[&FL!A]/////'[&FL!A]///////'[&FL!A]"), string("F=S/////F"), string("S=FL"), string("D=L=['''^^{-f+f+f-|-f+f+f}]"));
 	string str = lString.GetLString(5, 8, 
 		string("plant "), 
-		string("plant = internode + [ plant + fower ]--//[--leaf ] internode [++ leaf ]-[ plant flower ]++ plant flower "), 
-		string("internode = F seg [//&& leaf ][//^^ leaf ]F seg "), 
+		string("plant = internode + [ plant + flower ] - - // [ - - leaf ] internode [ + + leaf ] - [ plant flower ] + + plant flower "), 
+		string("internode = F seg [// & & leaf ] [// ^ ^ leaf ] F seg "), 
 		string("seg = seg F seg "), 
-		string("leaf = ['{+f-ff-f+|+f-ff-f}]"),
-		string("flower = [&&& pedicel '/ wedge //// wedge //// wedge //// wedge //// wedge ]"),
+		string("leaf = [' { +f-ff-f+ | +f-ff-f } ]"),
+		string("flower = [ & & & pedicel ' / wedge //// wedge //// wedge //// wedge //// wedge ]"),
 		string("pedicel = FF"),
-		string("wedge = [^F][{&&&&-f+f|-f+f}]"));
+		string("wedge = [' ^ F ] [ { & & & & -f+f | -f+f } ]"));
 	//string str = lString.GetLString(1, 2, string("A"), string("A=f[+F][-F][&F][^F][\\F][/F]"));
 	//string str = lString.GetLString(1, 1, string("+F&F-F\\F^F/F"));
 
